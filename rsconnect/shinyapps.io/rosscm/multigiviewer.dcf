@@ -1,0 +1,10 @@
+name: multigiviewer
+title:
+username:
+account: rosscm
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3906687
+bundleId: 4429183
+url: https://rosscm.shinyapps.io/multigiviewer/
+when: 1617519042.23963

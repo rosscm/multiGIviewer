@@ -123,9 +123,10 @@ server <- function(input, output) {
 
     # Subset for significant qGI data
     pn <- subset(pn, rownames(pn) %in% rownames(fdr_sig))
-    qgi_sig <- data.frame(
+    pn_sig <- data.frame(
       gene = rownames(pn),
       mean_qGI = rowMeans(pn),
+      min_FDR = apply(fdr_sig[,-ncol(fdr_sig)], 1, min),
       n_sig = fdr_sig$n_sig
     )
   })
@@ -161,7 +162,7 @@ server <- function(input, output) {
     }
     res <- list(qgi_in(), fc_double_in(), fc_single_in()) %>%
       reduce(left_join, by = "gene") %>%
-      select(gene, mean_qGI, mean_wtLFC, mean_koLFC, n_sig) %>%
+      select(gene, mean_qGI, min_FDR, mean_wtLFC, mean_koLFC, n_sig) %>%
       mutate(n_sig = ifelse(mean_qGI < 0, paste0("negative (", n_sig, ")"), paste0("positive (", n_sig, ")")))
   })
 

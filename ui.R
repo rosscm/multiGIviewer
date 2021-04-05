@@ -6,7 +6,7 @@ library(DT)
 
 # Define UI function
 ui <- fluidPage(theme = shinytheme("cosmo"),
-  titlePanel("Multi genetic interaction viewer", windowTitle = "mutliGIviewer"),
+  titlePanel("Multi-screen genetic interaction viewer", windowTitle = "mutliGIviewer"),
   sidebarLayout(
     sidebarPanel(
       uiOutput("datasetOutput"),

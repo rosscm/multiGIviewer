@@ -195,7 +195,7 @@ server <- function(input, output) {
     # Combine
     labels <- paste(c(labs_neg, labs_pos), collapse = ", ")
     textAreaInput("labelInput", "List plot labels (character sensitive):",
-                  value = labels, width = "400px", height = "150px")
+                  value = labels, height = "150px")
   })
 
   # Select label type

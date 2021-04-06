@@ -16,7 +16,7 @@ server <- function(input, output) {
   ######
 
   # Available datasets
-  datasets <- c("GIN_20210107", "CHEM_20210222")
+  datasets <- rev(sub(".Rdata", "", list.files(path = "datasets", pattern = "Rdata")))
 
   # Select dataset
   output$datasetOutput <- renderUI({
@@ -36,7 +36,7 @@ server <- function(input, output) {
       return(NULL)
     }
     selectInput("queryInput", "Select screens (choose at least two):",
-                sort(colnames(dataset()[["qgi"]])), multiple = TRUE,
+                sort(colnames(dataset()[["qGI"]])), multiple = TRUE,
                 selected = NULL)
   })
 
@@ -46,7 +46,7 @@ server <- function(input, output) {
       return(NULL)
     }
     selectInput("mediaInput", "Select media condition(s):",
-                colnames(dataset()[["fc_single"]]), multiple = TRUE,
+                colnames(dataset()[["fc_singlePhenotype"]]), multiple = TRUE,
                 selected = NULL)
   })
 
@@ -68,7 +68,7 @@ server <- function(input, output) {
     if (is.null(input$queryInput)) {
       return(NULL)
     }
-    dataset()[["qgi"]][which(colnames(dataset()[["qgi"]]) %in% input$queryInput)]
+    dataset()[["qGI"]][which(colnames(dataset()[["qGI"]]) %in% input$queryInput)]
   })
 
   # Subset FDR data by selected queryInput
@@ -76,7 +76,7 @@ server <- function(input, output) {
     if (is.null(input$queryInput)) {
       return(NULL)
     }
-    dataset()[["fdr"]][which(colnames(dataset()[["fdr"]]) %in% input$queryInput)]
+    dataset()[["FDR"]][which(colnames(dataset()[["FDR"]]) %in% input$queryInput)]
   })
 
   # Subset mutant LFC data by selected queryInput
@@ -84,7 +84,7 @@ server <- function(input, output) {
     if (is.null(input$queryInput)) {
       return(NULL)
     }
-    dataset()[["fc_double"]][which(colnames(dataset()[["fc_double"]]) %in% input$queryInput)]
+    dataset()[["fc_doublePhenotype"]][which(colnames(dataset()[["fc_doublePhenotype"]]) %in% input$queryInput)]
   })
 
   # Subset wildtype LFC data by selected mediaInput
@@ -92,7 +92,7 @@ server <- function(input, output) {
     if (is.null(input$mediaInput)) {
       return(NULL)
     }
-    dataset()[["fc_single"]][which(colnames(dataset()[["fc_single"]]) %in% input$mediaInput)]
+    dataset()[["fc_singlePhenotype"]][which(colnames(dataset()[["fc_singlePhenotype"]]) %in% input$mediaInput)]
   })
 
   ######
@@ -123,6 +123,8 @@ server <- function(input, output) {
 
     # Subset for significant qGI data
     pn <- subset(pn, rownames(pn) %in% rownames(fdr_sig))
+    fdr_sig <- fdr_sig[rownames(pn),]
+    
     pn_sig <- data.frame(
       gene = rownames(pn),
       mean_qGI = rowMeans(pn),
@@ -130,6 +132,9 @@ server <- function(input, output) {
       n_sig = fdr_sig$n_sig
     )
   })
+
+
+
 
   # Subset double mutant LFC data for significant GIs
   fc_double_in <- reactive({

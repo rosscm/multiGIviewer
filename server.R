@@ -26,7 +26,7 @@ server <- function(input, output) {
 
   # Load selected dataset
   dataset <- reactive({
-    filename <- paste0(input$datasetInput, ".Rdata")
+    filename <- paste0("datasets/", input$datasetInput, ".Rdata")
     get(load(filename))
   })
 
@@ -180,16 +180,20 @@ server <- function(input, output) {
     labs_neg <- results() %>%
       arrange(mean_qGI) %>%
       select(gene) %>%
-      slice(1:10)
+      slice(1:10) %>%
+      unlist() %>%
+      as.character()
 
     # Top 10 positive
     labs_pos <- results() %>%
       arrange(desc(mean_qGI)) %>%
       select(gene) %>%
-      slice(1:10)
+      slice(1:10) %>%
+      unlist() %>%
+      as.character()
 
     # Combine
-    labels <- paste(c(labs_neg$gene, labs_pos$gene), collapse = ", ")
+    labels <- paste(c(labs_neg, labs_pos), collapse = ", ")
     textAreaInput("labelInput", "List plot labels (character sensitive):",
                   value = labels, width = "400px", height = "150px")
   })

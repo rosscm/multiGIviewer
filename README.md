@@ -6,6 +6,12 @@ An interactive web application built with R Shiny to view multi-screen genetic i
 
 <div align="left">
 
+# Contents
+
+- [Usage](#usage)
+- [Inputs](#inputs)
+- [Outputs](#outputs)
+
 # Usage
 
 Watch this short demo on how to use `multiGIviewer` to view replicated genetic

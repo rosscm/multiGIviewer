@@ -29,5 +29,8 @@ ui <- fluidPage(theme = shinytheme("cosmo"),
     )
   ),
   hr(),
-  print("Created by Catherine Ross")
+  div(
+       class = "footer",
+       includeHTML("footer.html")
+   )
 )

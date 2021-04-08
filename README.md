@@ -38,8 +38,8 @@ interactions (qGI scores) across two or more CRISPR screens of interest.
 
 | Elements                                    | Properties |
 | ---------------------------------------     | ---------- |
-| **Fitness HAP1 wildtype [LFC] (x-axis)**    | single mutant fitness effect in selected media condition(s)
-| **Fitness HAP1 knockout [LFC] (y-axis)**    | double mutant fitness effect in selected screens
+| **Fitness HAP1 wildtype [LFC] (x-axis)**    | wildtype dropout effect (log2-foldchange) in selected media condition(s)
+| **Fitness HAP1 knockout [LFC] (y-axis)**    | knockout dropout effect (log2-foldchange) in selected screens
 | **Genetic interaction in n screens (fill)** | number of times positive or negative interaction is significant across selected screens
 | **Mean qGI score (size)**                   | mean qGI score of interaction across selected screens
 
@@ -47,9 +47,9 @@ interactions (qGI scores) across two or more CRISPR screens of interest.
 
 | Columns        | Properties |
 | -------------- | ---------- |
-| **gene**       | library gene interactor
+| **gene**       | gene interaction
 | **mean_qGI**   | mean qGI score of interaction across selected screens
-| **min_FDR**    | minimum qGI FDR value across selected screens
-| **mean_wtLFC** | mean wildtype (single mutant) log2-foldchange across selected media condition(s)
-| **mean_koLFC** | mean knockout (double mutant) log2-foldchange across selected media condition(s)
+| **min_FDR**    | minimum qGI FDR value of interaction across selected screens
+| **mean_wtLFC** | mean wildtype dropout effect (log2-foldchange) across selected media condition(s)
+| **mean_koLFC** | mean knockout dropout effect (log2-foldchange) across selected screens
 | **n_sig**      | number of times positive or negative interaction is significant across selected screens

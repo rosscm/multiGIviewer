@@ -23,13 +23,15 @@ interactions (qGI scores) across two or more CRISPR screens of interest.
 
 | Parameters              | Values     | Properties |
 | ----------------------- | ---------- | ---------- |
-| **Dataset**             | GIN_20210406, GIN_20210107, GIN_20201129, CHEM_20210218, CHEM_20210218_GIN_20210406 | qGI scores for 280 (GIN_20210406), 257 (GIN_20210107), 247 (GIN_20201129), 68 (CHEM_20210218), 348 (CHEM_20210218) & (GIN_20210406) screens
-| **Screens**             | screens IDs | list of all screens in selected dataset; two or more screens need to be selected to view replicated interactions
-| **Media conditions(s)** | min, rich and/or pyro (GIN); DMSO (CHEM)  | media type used to define wildtype single mutant fitness; more than one can be selected if screens were done in different media types
-| **FDR threshold**       | value from 0 to 1 | threshold to define significant genetic interactions; interactions must pass threshold in at least two screens to be shown
-| **Plot labels**         | comma separated gene symbols (character sensitive) | by default top ten positive and negative interactions are plotted; any label(s) can be chosen
-| **Label type**          | text or padded box | by default plot labels are drawn as plain text; padded box wraps text in a white box to better visualize labels
-| **Reference line(s)**   | y=x, x=0 and/or y=0 | any selection of reference lines can be chosen
+| **Dataset**             | GIN_20210406, GIN_20210107, GIN_20201129, CHEM_20210218, CHEM_20210218_GIN_20210406 | qGI scores for 280 (GIN_20210406), 257 (GIN_20210107), 247 (GIN_20201129), 68 (CHEM_20210218), 348 (CHEM_20210218) & (GIN_20210406) screens [*required*; default GIN_20210406]
+| **Screens**             | screens IDs | list of all screens in selected dataset; two or more screens need to be selected to view replicated interactions [*required*]
+| **Media conditions(s)** | min, rich, pyro and/or DMSO | media type used to define wildtype single mutant fitness; more than one can be selected if screens were done in different media types [*required*]
+| **FDR threshold**       | value from 0 to 1 | threshold to define significant genetic interactions; interactions must pass threshold in at least two screens to be shown [*required*; default 0.2]
+| **Positive colour**     | HEX colour codes | colour to fill darkest positive points [*optional*; default `#FAE057`]
+| **Negative colour**     | HEX colour codes | colour to fill darkest negative points [*optional*; default `#61C2FA`]
+| **Plot labels**         | gene symbols | comma separated (character sensitive) list of genes to label on plot [*optional*; default top ten positive and negative interactions]
+| **Label type**          | Text or Padded box | method to draw plot labels; padded box wraps text in a white box to better visualize labels [*optional*; default Text]
+| **Reference line(s)**   | y=x, x=0 and/or y=0 | selection of reference lines to draw on plot [*optional*]
 
 
 # Outputs

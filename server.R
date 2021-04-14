@@ -7,7 +7,6 @@ library(DT)
 library(ggplot2)
 library(ggthemes)
 library(ggrepel)
-library(shinyalert)
 
 # Define server function
 server <- function(input, output) {

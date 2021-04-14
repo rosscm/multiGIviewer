@@ -7,6 +7,7 @@ library(DT)
 library(ggplot2)
 library(ggthemes)
 library(ggrepel)
+library(shinyalert)
 
 # Define server function
 server <- function(input, output) {
@@ -14,7 +15,6 @@ server <- function(input, output) {
   ######
   # USER INPUTS
   ######
-
   # Available datasets
   datasets <- rev(sub(".Rdata", "", list.files(path = "datasets", pattern = "Rdata")))
 
@@ -65,33 +65,21 @@ server <- function(input, output) {
 
   # Subset qGI data by selected queryInput
   qgi <- reactive({
-    if (is.null(input$queryInput)) {
-      return(NULL)
-    }
     dataset()[["qGI"]][which(colnames(dataset()[["qGI"]]) %in% input$queryInput)]
   })
 
   # Subset FDR data by selected queryInput
   fdr <- reactive({
-    if (is.null(input$queryInput)) {
-      return(NULL)
-    }
     dataset()[["FDR"]][which(colnames(dataset()[["FDR"]]) %in% input$queryInput)]
   })
 
   # Subset mutant LFC data by selected queryInput
   fc_double <- reactive({
-    if (is.null(input$queryInput)) {
-      return(NULL)
-    }
     dataset()[["fc_doublePhenotype"]][which(colnames(dataset()[["fc_doublePhenotype"]]) %in% input$queryInput)]
   })
 
   # Subset wildtype LFC data by selected mediaInput
   fc_single <- reactive({
-    if (is.null(input$mediaInput)) {
-      return(NULL)
-    }
     dataset()[["fc_singlePhenotype"]][which(colnames(dataset()[["fc_singlePhenotype"]]) %in% input$mediaInput)]
   })
 
@@ -101,7 +89,7 @@ server <- function(input, output) {
 
   # Subset for significant GIs
   qgi_in <- reactive({
-    if (is.null(input$queryInput)) {
+    if (is.null(input$queryInput) || is.null(input$mediaInput)) {
       return(NULL)
     }
 
@@ -115,59 +103,58 @@ server <- function(input, output) {
     n_sig <- sapply(as.data.frame(t(fdr_pn)), function(x) {
       length(which(x < input$fdrInput))
     })
+    screen_sig <- sapply(as.data.frame(t(fdr_pn)), function(x) {
+      ind <- which(x < input$fdrInput)
+      ind <- colnames(fdr_pn)[ind]
+      ind <- paste(ind, collapse = ", ")
+      return(ind)
+    })
 
     # Subset FDR data for GIs significant in at least 2 screens
     fdr_sig <- fdr_pn %>%
       mutate(n_sig = n_sig) %>%
+      mutate(screen_sig = screen_sig) %>%
       subset(n_sig >= 2)
 
     # Subset for significant qGI data
     pn <- subset(pn, rownames(pn) %in% rownames(fdr_sig))
     fdr_sig <- fdr_sig[rownames(pn),]
-    
+
     pn_sig <- data.frame(
       gene = rownames(pn),
-      mean_qGI = rowMeans(pn),
-      min_FDR = apply(fdr_sig[,-ncol(fdr_sig)], 1, min),
-      n_sig = fdr_sig$n_sig
+      mean_qGI = signif(rowMeans(pn), 3),
+      min_FDR = signif(apply(fdr_sig[,-ncol(fdr_sig)], 1, min), 3),
+      n_sig = fdr_sig$n_sig,
+      screen_sig = fdr_sig$screen_sig
     )
   })
 
-
-
-
   # Subset double mutant LFC data for significant GIs
   fc_double_in <- reactive({
-    if (is.null(qgi_in())) {
-      return(NULL)
-    }
     fc_double <- subset(fc_double(), rownames(fc_double()) %in% qgi_in()$gene)
     fc_double <- data.frame(
       gene = rownames(fc_double),
-      mean_koLFC = rowMeans(fc_double)
+      mean_koLFC = signif(rowMeans(fc_double), 3)
     )
   })
 
   # Subset single mutant (wildtype) LFC data for significant GIs
   fc_single_in <- reactive({
-    if (is.null(input$mediaInput)) {
-      return(NULL)
-    }
     fc_single <- subset(fc_single(), colnames(fc_single()) %in% input$mediaInput)
     fc_single <- data.frame(
       gene = rownames(fc_single),
-      mean_wtLFC = rowMeans(fc_single)
+      mean_wtLFC = signif(rowMeans(fc_single), 3)
     )
   })
 
   # Combine data for plotting
   results <- reactive({
-    if (is.null(fc_single_in()) || is.null(qgi_in())) {
+    if (is.null(qgi_in()) || is.null(fc_double_in()) || is.null(fc_single_in())) {
       return(NULL)
     }
     res <- list(qgi_in(), fc_double_in(), fc_single_in()) %>%
       reduce(left_join, by = "gene") %>%
-      select(gene, mean_qGI, min_FDR, mean_wtLFC, mean_koLFC, n_sig) %>%
+      select(gene, mean_qGI, min_FDR, mean_wtLFC, mean_koLFC, n_sig, screen_sig) %>%
       mutate(n_sig = ifelse(mean_qGI < 0, paste0("negative (", n_sig, ")"), paste0("positive (", n_sig, ")")))
   })
 
@@ -200,7 +187,7 @@ server <- function(input, output) {
     # Combine
     labels <- paste(c(labs_neg, labs_pos), collapse = ", ")
     textAreaInput("labelInput", "List plot labels (character sensitive):",
-                  value = labels, height = "150px")
+                  value = labels, height = "110px")
   })
 
   # Select label type
@@ -228,21 +215,13 @@ server <- function(input, output) {
   ######
 
   plotInput <- reactive({
-    if (is.null(input$labelInput)) {
-      return(NULL)
-    }
-
     # Get plot labels
     labs_in <- unlist(strsplit(as.character(input$labelInput), ", "))
     labs_in <- data.frame(gene = labs_in, label = sprintf("italic('%s')", labs_in))
 
-    if (is.null(results())) {
-      return(NULL)
-    }
-
     # Define colour gradients for positive and negative GIs
-    negColFunc <- colorRampPalette(c("#61c2fa", "#014e7a"))
-    posColFunc <- colorRampPalette(c("#fae057", "#826f03"))
+    negColFunc <- colorRampPalette(c("#61c2fa", input$negCol))
+    posColFunc <- colorRampPalette(c("#fae057", input$posCol))
     negCol <- negColFunc(length(unique(grep("negative", results()$n_sig, value = TRUE))))
     posCol <- posColFunc(length(unique(grep("positive", results()$n_sig, value = TRUE))))
     cols <- c(negCol, posCol)
@@ -297,6 +276,9 @@ server <- function(input, output) {
 
   # Output plot
   output$plot <- renderPlot({
+    if (is.null(input$labelInput) || is.null(results())) {
+      return(NULL)
+    }
     print(plotInput())
   })
 

@@ -1,0 +1,15 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap');
+
+/* --- Footer --- */
+
+footer {
+  font-family: 'Roboto', 'Montserrat', sans-serif;
+  width: 100%;
+  padding: 10px;
+  left: 0;
+  bottom: 0;
+  background-color: black;
+  color: white;
+  text-align: center;
+}

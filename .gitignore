@@ -1,3 +1,6 @@
-rsconnect/
-datasets/
+.Rproj.user
+.Rhistory
+.Rdata
+.httr-oauth
 .DS_Store
+/inst/extdata

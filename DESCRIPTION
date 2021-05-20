@@ -1,0 +1,36 @@
+Package: multiGIviewer
+Title: Multi-screen genetic interaction viewer
+Version: 0.0.0.9000
+Authors@R: person('Catherine', 'Ross', email = 'catherinem.ross@mail.utoronto.ca', role = c('cre', 'aut'))
+Description: An interactive web application built with R Shiny to view multi-screen genetic interaction data from CRISPR-Cas9 experiments.
+License: MIT + file LICENSE
+Imports:
+    attempt,
+    colourpicker,
+    config (>= 0.3.1),
+    dplyr,
+    DT,
+    ggplot2,
+    ggrepel,
+    ggthemes,
+    glue,
+    golem (>= 0.3.1),
+    htmltools,
+    pkgload,
+    processx,
+    purrr,
+    shiny (>= 1.6.0),
+    shinycssloaders,
+    shinythemes
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.1.1
+URL: https://github.com/rosscm/multiGIviewer
+BugReports: https://github.com/rosscm/multiGIviewer/issues
+Suggests:
+    spelling,
+    testthat (>= 3.0.0)
+Config/testthat/edition: 3
+Language: en-US
+Depends:
+    R (>= 3.5.0)

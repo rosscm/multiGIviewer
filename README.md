@@ -3,8 +3,8 @@
 
 # multiGIviewer
 
-An interactive web application built with R Shiny to view multi-screen
-genetic interaction data
+An interactive R {shiny} web application built with the {golem}
+framework to view multi-screen genetic interaction data
 
 <div align="left">
 

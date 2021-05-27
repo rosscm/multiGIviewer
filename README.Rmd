@@ -15,11 +15,8 @@ knitr::opts_chunk$set(
 
 # multiGIviewer
 
-<!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
-<!-- badges: end -->
-
-An interactive web application built with R Shiny to view multi-screen genetic interaction data
+An interactive R {shiny} web application built with the {golem} framework to view
+multi-screen genetic interaction data
 
 <div align="left">
 

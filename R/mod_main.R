@@ -2,15 +2,17 @@
 #'
 #' @description A shiny Module.
 #' @param id,input,output,session Internal parameters for {shiny}.
-#' @noRd
 #' @importFrom shinycssloaders withSpinner
 #' @importFrom shiny NS tagList
+#'
+#' @noRd
 mod_main_ui <- function(id) {
   ns <- NS(id)
   tagList(
-    downloadButton(ns("downloadData"), "Download table"),
-    downloadButton(ns("downloadPlot"), "Download plot"),
-    h2(textOutput(ns("text"))),
+    col_2(uiOutput(ns("getData"))),
+    col_2(uiOutput(ns("getPlot"))),
+    rep_br(2),
+    h3(textOutput(ns("text"))),
     rep_br(1),
     withSpinner(plotOutput(ns("plot"))),
     rep_br(2),
@@ -20,7 +22,6 @@ mod_main_ui <- function(id) {
 
 #' main Server Functions
 #'
-#' @noRd
 #' @import dplyr
 #' @import ggplot2
 #' @import ggrepel
@@ -28,6 +29,8 @@ mod_main_ui <- function(id) {
 #' @importFrom DT renderDT DTOutput
 #' @importFrom grDevices colorRampPalette
 #' @importFrom utils write.csv
+#'
+#' @noRd
 mod_main_server <- function(id, rvals, dataset) {
   moduleServer(id, function(input, output, session) {
     ns <- session$ns
@@ -202,6 +205,14 @@ mod_main_server <- function(id, rvals, dataset) {
         }
       }
 
+      # Store results in rvals object
+      observeEvent(results, {
+        rvals$resultsOutput = results
+      })
+      observeEvent(labels, {
+        rvals$labelsInput = labels
+      })
+
       # Get rid of check NOTEs
       gene=mean_qGI=min_FDR=mean_wtLFC=mean_koLFC=n_sig=screen_sig=NULL
       .="shut up"
@@ -212,9 +223,6 @@ mod_main_server <- function(id, rvals, dataset) {
 
       # Output text summary
       output$text <- renderText({
-        if (is.null(results)) {
-          return(NULL)
-        }
         paste("Total replicated interactions:", nrow(results))
       })
 
@@ -225,15 +233,17 @@ mod_main_server <- function(id, rvals, dataset) {
 
       # Output results table
       output$results <- renderDT({
-        if (is.null(results)) {
-          return(NULL)
-        }
         return(results)
       })
 
       ######
       # OUTPUT DOWNLOADING
       ######
+
+      output$getData <- renderUI({
+        req(results)
+        downloadButton(ns("downloadData"), label = "Download table")
+      })
 
       output$downloadData <- downloadHandler(
        filename = function() {
@@ -243,23 +253,21 @@ mod_main_server <- function(id, rvals, dataset) {
          write.csv(results, con)
       })
 
+
+      output$getPlot <- renderUI({
+        req(results)
+        downloadButton(ns("downloadPlot"), label = "Download plot")
+      })
+
       output$downloadPlot <- downloadHandler(
         filename = function() {
           paste0(rvals$datasetInput, "_multiGIplot", ".png")
         },
         content = function(file) {
-            device <- function(..., width, height) grDevices::png(..., width = 9, height = 5.5, res = 300, units = "in")
-            ggsave(file, plot = p, device = device)
+          device <- function(..., width, height) grDevices::png(..., width = 9, height = 5.5, res = 300, units = "in")
+          ggsave(file, plot = p, device = device)
       })
 
-
-      # Store results in rvals object
-      observeEvent(results, {
-        rvals$resultsOutput = results
-      })
-      observeEvent(labels, {
-        rvals$labelsInput = labels
-      })
     })
   })
 }

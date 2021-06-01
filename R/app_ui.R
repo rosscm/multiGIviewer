@@ -3,6 +3,7 @@
 #' @param request Internal parameter for `{shiny}`.
 #' @import shiny
 #' @import shinythemes
+#'
 #' @noRd
 app_ui <- function(request) {
   tagList(
@@ -34,6 +35,7 @@ app_ui <- function(request) {
 #'
 #' @import shiny
 #' @importFrom golem add_resource_path activate_js favicon bundle_resources
+#' @importFrom shinyjs useShinyjs
 #' @noRd
 golem_add_external_resources <- function() {
 
@@ -46,6 +48,7 @@ golem_add_external_resources <- function() {
     bundle_resources(
       path = app_sys('app/www'),
       app_title = 'multiGIviewer'
-    )
+    ),
+    shinyjs::useShinyjs()
   )
 }

@@ -2,9 +2,11 @@
 #'
 #' @description A shiny Module.
 #' @param id,input,output,session Internal parameters for {shiny}.
-#' @noRd
 #' @importFrom colourpicker colourInput
 #' @importFrom shiny NS tagList
+#' @importFrom shinyjs hidden
+#'
+#' @noRd
 mod_sidebar_ui <- function(id, dataset) {
   ns <- NS(id)
   tagList(
@@ -41,8 +43,12 @@ mod_sidebar_ui <- function(id, dataset) {
       max = 1,
       value = 0.2
     ),
+    # Show plot controls
+    checkboxInput(
+      inputId = ns("showControls"),
+      label = "Show plot controls"
+    ),
     rep_br(1),
-    h4("Output selection"),
     # Plot darkest positive GI colour
     colourInput(
       inputId = ns("posColInput"),
@@ -81,6 +87,8 @@ mod_sidebar_ui <- function(id, dataset) {
 
 #' sidebar Server Functions
 #'
+#' @importFrom shinyjs show hide
+#'
 #' @noRd
 mod_sidebar_server <- function(id, rvals, dataset) {
   moduleServer(id, function(input, output, session) {
@@ -103,10 +111,22 @@ mod_sidebar_server <- function(id, rvals, dataset) {
       )
     })
 
-  #  observe({print(head(rvals$queryInput))})
-  #  observe({print(head(rvals$labelsInput))})
-  #  observe({print(length(rvals$queryInput))})
-  #  observe({print(length(rvals$labelsInput))})
+    # Display output plot controls if selected
+    observeEvent(input$showControls, {
+      if (isTRUE(input$showControls)) {
+        show("posColInput")
+        show("negColInput")
+        show("labelsInput")
+        show("typeInput")
+        show("lineInput")
+      } else {
+        hide("posColInput")
+        hide("negColInput")
+        hide("labelsInput")
+        hide("typeInput")
+        hide("lineInput")
+      }
+    })
 
     # Update reactive outputs based on selected inputs
     observe({

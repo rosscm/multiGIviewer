@@ -5,6 +5,7 @@
 #' @examples
 #' rep_br(5)
 #' @importFrom shiny HTML
+#'
 #' @noRd
 rep_br <- function(times = 1) {
   HTML(rep("<br/>", times = times))
@@ -26,6 +27,7 @@ not_na <- Negate(is.na)
 #' These are convenient wrappers around
 #' `column(12, ...)`, `column(6, ...)`, `column(4, ...)`...
 #' @importFrom shiny column
+#'
 #' @noRd
 col_12 <- function(...){
   column(12, ...)

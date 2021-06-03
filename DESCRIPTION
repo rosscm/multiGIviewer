@@ -21,6 +21,7 @@ Imports:
     purrr,
     shiny (>= 1.6.0),
     shinycssloaders,
+    shinyjs,
     shinythemes
 Encoding: UTF-8
 LazyData: true

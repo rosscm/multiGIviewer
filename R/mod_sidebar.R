@@ -4,7 +4,6 @@
 #' @param id,input,output,session Internal parameters for {shiny}.
 #' @importFrom colourpicker colourInput
 #' @importFrom shiny NS tagList
-#' @importFrom shinyjs hidden
 #'
 #' @noRd
 mod_sidebar_ui <- function(id, dataset) {
